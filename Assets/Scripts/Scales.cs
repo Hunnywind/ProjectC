@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Scales : MonoBehaviour {
 
+    [SerializeField]
+    private float _revision = 0.1f;
+
     private int _leftWeight;
     private int _rightWeight;
     private RectTransform _transform;
@@ -24,10 +27,21 @@ public class Scales : MonoBehaviour {
             CardMng.GetInstance.WeightSame();
         }
 
-        int result = _leftWeight - _rightWeight;
+        var result = _leftWeight - _rightWeight;
+        var objects = 20;
+        if (_leftWeight < _rightWeight)
+        {
+            objects *= -1;
+            result *= -1;
+        }
+        else if (_leftWeight == _rightWeight)
+        {
+            objects = 0;
+            result = 10;
+        }
         var preRot = _transform.rotation;
-        var nextRot = Quaternion.Euler(preRot.x, preRot.y, result);
-        _transform.rotation = Quaternion.Slerp(preRot, nextRot, Time.deltaTime);
+        var nextRot = Quaternion.Euler(preRot.x, preRot.y, objects);
+        _transform.rotation = Quaternion.Slerp(preRot, nextRot, Time.deltaTime * result * _revision);
     }
 
     public void AddWeight(int weight, Direction direction)

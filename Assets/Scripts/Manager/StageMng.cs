@@ -97,5 +97,7 @@ public class StageMng : Singleton<StageMng> {
         _isStageStart = false;
         yield return new WaitForSeconds(3f);
         _mainGamePanel.SetActive(false);
+        ScoreMng.GetInstance.AddScore(150);
+        ScoreMng.GetInstance.Test();
     }
 }

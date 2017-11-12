@@ -171,6 +171,9 @@ public class QuestionMaker {
         if (leftResult == rightResult)
             return true;
         else
+        {
+            Debug.Log("Retry");
             return false;
+        }
     }
 }

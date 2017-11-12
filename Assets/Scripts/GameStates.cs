@@ -25,23 +25,16 @@ namespace GameStates
 
     public class LobbyState : GameState<GameMng>
     {
-        
-        private GameObject _isLobbyUseObjects;
 
         public override void Enter(GameMng entity)
         {
             STATE_NAME = "LOBBY";
-            _isLobbyUseObjects = GameObject.Find("LobbyUse");
-
-            _isLobbyUseObjects.SetActive(true);
         }
         public override void Update(GameMng entity)
         {
         }
         public override void Exit(GameMng entity)
         {
-
-            _isLobbyUseObjects.SetActive(false);
         }
         public override void Touch(GameMng entity, float x, float y)
         {
