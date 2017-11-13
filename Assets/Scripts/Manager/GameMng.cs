@@ -18,6 +18,11 @@ public class GameMng : Singleton<GameMng>{
         SceneManager.LoadScene("Main");
         
 	}
+    public void Touch(float x, float y)
+    {
+        if (StageMng.GetInstance != null)
+            StageMng.GetInstance.Touch();
+    }
     private void Update()
     {
         _gameStateMachine.Update();
