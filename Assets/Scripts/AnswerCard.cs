@@ -21,7 +21,8 @@ public class AnswerCard : SCard {
     }
     private void OnMouseDown()
     {
-        ReturnCard();
+        if(StageMng.GetInstance._isStageStart)
+            ReturnCard();
     }
     public override void ReturnCard()
     {

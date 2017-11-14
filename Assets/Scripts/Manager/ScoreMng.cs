@@ -12,11 +12,15 @@ public class ScoreMng : Singleton<ScoreMng> {
 
     [SerializeField]
     private float _scoreCalTime = 3f;
+    [SerializeField]
+    private int _cardRemoveScore = 10;
 
     private int _goalScore = 0;
     private int _myScore = 0;
     private int _showScore = 0;
     private int _preStageScore = 0;
+
+    private int _difficulty;
 
     private float _revision;
 
@@ -41,11 +45,12 @@ public class ScoreMng : Singleton<ScoreMng> {
     {
         //_scoreText.text = _showScore.ToString();
         _stageScoreText.text = "Obtain Score: " + _preStageScore;
-        _percentText.text = ((int)(((float)_myScore / _goalScore) * 100)).ToString() + "%";
+        _percentText.text = "New Rule " + ((int)(((float)_myScore / _goalScore) * 100)).ToString() + "%";
     }
 
     public void Test()
     {
+        _percentText.gameObject.SetActive(true);
         _stageScoreText.gameObject.SetActive(true);
         CoroutineManager.instance.StartCoroutine(ScoreUpdate());
         _revision = _scoreCalTime / _preStageScore;

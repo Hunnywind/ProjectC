@@ -78,4 +78,23 @@ namespace GameStates
         {
         }
     }
+    public class ScoreCalState : GameState<GameMng>
+    {
+        public override void Enter(GameMng entity)
+        {
+            STATE_NAME = "SCORE_CAL";
+        }
+
+        public override void Exit(GameMng entity)
+        {
+        }
+
+        public override void Touch(GameMng entity, float x, float y)
+        {
+        }
+
+        public override void Update(GameMng entity)
+        {
+        }
+    }
 }

@@ -103,6 +103,12 @@ public class QuestionMaker {
     }
     private void CardNumberDecision()
     {
+        var ranNumList = new List<int>();
+        for (int i = 1; i < 11; i++)
+        {
+            ranNumList.Add(i);
+        }
+
         for (int i = 0; i < _numberLeft.Count; i++)
         {
             _numberLeft[i] = 0;
@@ -114,46 +120,15 @@ public class QuestionMaker {
 
         for (int i = 0; i < _numberLeft.Count; i++)
         {
-            int randomNum = Random.Range(1, 11);
-            bool isDuplication = true;
-            while(isDuplication)
-            {
-                randomNum = Random.Range(1, 11);
-                isDuplication = false;
-                foreach (var item in _numberLeft)
-                {
-                    if (item == randomNum)
-                        isDuplication = true;
-                }
-                foreach (var item in _numberRight)
-                {
-                    if (item == randomNum)
-                        isDuplication = true;
-                }
-            }
-            _numberLeft[i] = randomNum;
+            _numberLeft[i] = ranNumList[Random.Range(0, ranNumList.Count)];
+            ranNumList.Remove(_numberLeft[i]);
         }
         for (int i = 0; i < _numberRight.Count; i++)
         {
-            int randomNum = Random.Range(1, 11);
-            bool isDuplication = true;
-            while (isDuplication)
-            {
-                randomNum = Random.Range(1, 11);
-                isDuplication = false;
-                foreach (var item in _numberLeft)
-                {
-                    if (item == randomNum)
-                        isDuplication = true;
-                }
-                foreach (var item in _numberRight)
-                {
-                    if (item == randomNum)
-                        isDuplication = true;
-                }
-            }
-            _numberRight[i] = randomNum;
+            _numberRight[i] = ranNumList[Random.Range(0, ranNumList.Count)];
+            ranNumList.Remove(_numberRight[i]);
         }
+        ranNumList.Clear();
     }
     private bool Check()
     {

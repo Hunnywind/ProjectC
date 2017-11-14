@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using GameStates;
+using UnityEngine.UI;
 
 public class StageMng : Singleton<StageMng> {
 
@@ -17,17 +18,34 @@ public class StageMng : Singleton<StageMng> {
     private GameObject _levelClear;
     [SerializeField]
     private GameObject _stageClear;
+    [SerializeField]
+    private Text _levelText;
+    [SerializeField]
+    private Text _timeText;
 
     [SerializeField]
     private Scales _scales;
 
     public bool _isStageStart { private set; get; }
-
+    private float _time;
     
     private void Start()
     {
         Init();
         
+    }
+    private void Update()
+    {
+        _levelText.text = "Level  " + _stageNum;
+    }
+    private void FixedUpdate()
+    {
+        if (_isStageStart)
+        {
+            _time += Time.deltaTime;
+            int second = (int)_time;
+            _timeText.text = second.ToString();
+        }
     }
     void Init()
     {
@@ -41,10 +59,6 @@ public class StageMng : Singleton<StageMng> {
         {
             StageStart();
         }
-        if (GameMng.GetInstance.GetStageName().Equals("LEVEL_CLEAR"))
-        {
-            CoroutineManager.instance.StartCoroutine(LevelClear());
-        }
     }
     public void LobbySetting()
     {
@@ -52,10 +66,12 @@ public class StageMng : Singleton<StageMng> {
         _stageNotUseObject.SetActive(true);
         _stageClear.SetActive(false);
         _levelClear.SetActive(false);
+        _levelText.gameObject.SetActive(true);
         GameMng.GetInstance.ChangeState(new LobbyState());
     }
     public void StageStart()
     {
+        _time = 0f;
         GameMng.GetInstance.ChangeState(new PlayState());
         _stageUseObject.SetActive(true);
         _stageNotUseObject.SetActive(false);
@@ -76,9 +92,9 @@ public class StageMng : Singleton<StageMng> {
     {
         _isStageStart = false;
         _stageNum++;
+
         if(_stageNum > 5)
         {
-            _stageNum = 0;
             _levelClear.SetActive(true);
             CoroutineManager.instance.StartCoroutine(LevelClear());
         }
@@ -96,6 +112,8 @@ public class StageMng : Singleton<StageMng> {
         GameMng.GetInstance.ChangeState(new LevelClearState());
         _isStageStart = false;
         yield return new WaitForSeconds(3f);
+        _stageNum = 0;
+        _levelText.gameObject.SetActive(false);
         _mainGamePanel.SetActive(false);
         ScoreMng.GetInstance.AddScore(150);
         ScoreMng.GetInstance.Test();
