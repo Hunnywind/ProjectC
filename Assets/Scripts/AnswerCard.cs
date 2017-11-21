@@ -21,8 +21,11 @@ public class AnswerCard : SCard {
     }
     private void OnMouseDown()
     {
-        if(StageMng.GetInstance._isStageStart)
+        if (StageMng.GetInstance._isStageStart)
+        {
+            ScoreMng.GetInstance.SubtractCard();
             ReturnCard();
+        }
     }
     public override void ReturnCard()
     {

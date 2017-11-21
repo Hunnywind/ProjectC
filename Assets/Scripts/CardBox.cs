@@ -27,4 +27,11 @@ public class CardBox : MonoBehaviour {
             item.ReturnCard();
         }
     }
+    public GameObject GetObject(Direction direction)
+    {
+        if (direction == Direction.LEFT)
+            return _leftBox;
+        else
+            return _rightBox;
+    }
 }

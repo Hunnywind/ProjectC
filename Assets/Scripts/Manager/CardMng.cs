@@ -9,6 +9,8 @@ public class CardMng : Singleton<CardMng> {
     private ObjectPool _qCardObjectPool;
     [SerializeField]
     private ObjectPool _aCardObjectPool;
+    //[SerializeField]
+    //private ObjectPool _mCardObjectPool;
     [SerializeField]
     private CardBox _answerBox;
     [SerializeField]
@@ -30,6 +32,7 @@ public class CardMng : Singleton<CardMng> {
     {
         _qCardObjectPool.Init();
         _aCardObjectPool.Init();
+        //_mCardObjectPool.Init();
     }
     public void CardSetting(int cardKindCount, int cardCount)
     {
@@ -57,10 +60,17 @@ public class CardMng : Singleton<CardMng> {
         cardScript.Init(num, d);
         _questionBox.CardInput(qCard, d);
     }
+    public void CreateMovingCard(int num, Direction d)
+    {
+        //GameObject mCard = _mCardObjectPool.GetObject();
+        //MovingCard movingCard = mCard.GetComponent<MovingCard>();
+        //movingCard.Init(num, d, _questionBox.GetObject(d).GetComponent<RectTransform>().anchoredPosition
+        //    + _questionBox.gameObject.GetComponent<RectTransform>().anchoredPosition
+        //    , _answerBox.GetObject(d));
+    }
     public void CreateAnswerCard(int num, Direction d)
     {
         if (_mustUseCardCount < 1) return;
-
         _mustUseCardCount--;
         GameObject aCard = _aCardObjectPool.GetObject();
         SCard cardScript = aCard.GetComponent<SCard>();

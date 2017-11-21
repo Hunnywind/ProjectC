@@ -79,12 +79,13 @@ public class StageMng : Singleton<StageMng> {
         _levelClear.SetActive(false);
 
         _isStageStart = true;
-        var value = GameData.GetInstance.GetGameData(DataKind.NORMALSTAGE,_stageNum,"CardCount");
-        int cardCount = int.Parse(value);
-        value = GameData.GetInstance.GetGameData(DataKind.NORMALSTAGE, _stageNum, "CardKind");
-        int cardKind = int.Parse(value);
+        var count = GameData.GetInstance.GetGameData(DataKind.NORMALSTAGE,_stageNum,"CardCount");
+        int cardCount = int.Parse(count);
+        var kind = GameData.GetInstance.GetGameData(DataKind.NORMALSTAGE, _stageNum, "CardKind");
+        int cardKind = int.Parse(kind);
 
         CardMng.GetInstance.CardSetting(cardKind, cardCount);
+        ScoreMng.GetInstance.SetDifficult(cardCount * cardKind);
         _scales.Clear();
     }
 
@@ -92,8 +93,9 @@ public class StageMng : Singleton<StageMng> {
     {
         _isStageStart = false;
         _stageNum++;
-
-        if(_stageNum > 5)
+        ScoreMng.GetInstance.SetTime(_time);
+        ScoreMng.GetInstance.StageClear();
+        if (_stageNum > 5)
         {
             _levelClear.SetActive(true);
             CoroutineManager.instance.StartCoroutine(LevelClear());

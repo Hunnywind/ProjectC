@@ -17,6 +17,7 @@ public class QuestionCard : SCard {
     }
     private void OnMouseDown()
     {
+        //CardMng.GetInstance.CreateMovingCard(_cardNumber, _cardDirection);
         CardMng.GetInstance.CreateAnswerCard(_cardNumber, _cardDirection);
     }
     public override void ReturnCard()

@@ -37,7 +37,10 @@ public class GameData : Singleton<GameData> {
         }
 
         TextAsset loadText = Resources.Load<TextAsset>("Data\\" + directory);
-
+        if(loadText == null)
+        {
+            Debug.Log("Can't load data");
+        }
         line = loadText.text.Split('\n');
         for (int i = 0; i < line.Length; i++)
         {

@@ -88,17 +88,23 @@ public class QuestionMaker {
     }
     private void AnswerDecision()
     {
+        int tempRemainCount = _remainCardCount;
+        int leftRemainCount = Random.Range(1, tempRemainCount);
+        int rightRemainCount = tempRemainCount - leftRemainCount;
+
         for (int i = 0; i < _answerLeftCount.Count; i++)
         {
-            _answerLeftCount[i] = Random.Range(0, _remainCardCount);
-            _remainCardCount -= _answerLeftCount[i];
+            _answerLeftCount[i] = Random.Range(0, leftRemainCount);
+            if (i == _answerLeftCount.Count - 1)
+                _answerLeftCount[i] = leftRemainCount;
+            leftRemainCount -= _answerLeftCount[i];
         }
         for (int i = 0; i < _answerRightCount.Count; i++)
         {
-            _answerRightCount[i] = Random.Range(0, _remainCardCount);
+            _answerRightCount[i] = Random.Range(0, rightRemainCount);
             if (i == _answerRightCount.Count - 1)
-                _answerRightCount[i] = _remainCardCount;
-            _remainCardCount -= _answerRightCount[i];
+                _answerRightCount[i] = rightRemainCount;
+            rightRemainCount -= _answerRightCount[i];
         }
     }
     private void CardNumberDecision()
@@ -147,7 +153,6 @@ public class QuestionMaker {
             return true;
         else
         {
-            Debug.Log("Retry");
             return false;
         }
     }

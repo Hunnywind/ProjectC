@@ -98,8 +98,8 @@ public class STouch : MonoBehaviour
             case "begin":
                 {
                     Debug.Log("down:" + x + "," + y);
-                    if (GameMng.GetInstance != null)
-                        GameMng.GetInstance.Touch(x, y);
+                    //if (GameMng.GetInstance != null)
+                    //    GameMng.GetInstance.Touch(x, y);
                     break;
                 }
             case "end": Debug.Log("end:" + x + "," + y + ", d:" + dx + "," + dy); break;
