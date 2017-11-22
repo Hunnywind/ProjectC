@@ -15,13 +15,26 @@ public class QuestionCard : SCard {
     {
         base.Init(num, d);
     }
+    public override void AddCardType(CardType type)
+    {
+        base.AddCardType(type);
+        switch (type)
+        {
+            case CardType.QUESTION_MARK:
+                _cardNumberText.text = "?";
+                break;
+            default:
+                break;
+        }
+    }
     private void OnMouseDown()
     {
         //CardMng.GetInstance.CreateMovingCard(_cardNumber, _cardDirection);
-        CardMng.GetInstance.CreateAnswerCard(_cardNumber, _cardDirection);
+        CardMng.GetInstance.CreateAnswerCard(_cardNumber, _cardDirection, _cardTypeList);
     }
     public override void ReturnCard()
     {
+        base.ReturnCard();
         CardMng.GetInstance.ReturnCard(this);
         gameObject.SetActive(false);
     }

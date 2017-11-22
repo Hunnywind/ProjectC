@@ -20,12 +20,12 @@ public class MovingCard : SCard {
     }
     private void FixedUpdate()
     {
-        var target = Vector2.MoveTowards(_rTransform.anchoredPosition, _destination, _speed * Time.deltaTime);
-        _rTransform.anchoredPosition = target;
-        if ((_rTransform.anchoredPosition - _destination).sqrMagnitude < 100.0f)
-        {
-            CardMng.GetInstance.CreateAnswerCard(_cardNumber, _cardDirection);
-            gameObject.SetActive(false);
-        }
+        //var target = Vector2.MoveTowards(_rTransform.anchoredPosition, _destination, _speed * Time.deltaTime);
+        //_rTransform.anchoredPosition = target;
+        //if ((_rTransform.anchoredPosition - _destination).sqrMagnitude < 100.0f)
+        //{
+        //    CardMng.GetInstance.CreateAnswerCard(_cardNumber, _cardDirection);
+        //    gameObject.SetActive(false);
+        //}
     }
 }

@@ -88,8 +88,18 @@ public class StageMng : Singleton<StageMng> {
         ScoreMng.GetInstance.SetDifficult(cardCount * cardKind);
         _scales.Clear();
     }
-
-    public IEnumerator StageClear()
+    public void StageClear()
+    {
+        CoroutineManager.instance.StartCoroutine(StageClearCoroutine());
+    }
+    public void LevelClear()
+    {
+        // Cheat
+        ScoreMng.GetInstance.AddScore(5000);
+        ScoreMng.GetInstance.StageClear();
+        CoroutineManager.instance.StartCoroutine(LevelClearCoroutine());
+    }
+    public IEnumerator StageClearCoroutine()
     {
         _isStageStart = false;
         _stageNum++;
@@ -98,7 +108,7 @@ public class StageMng : Singleton<StageMng> {
         if (_stageNum > 5)
         {
             _levelClear.SetActive(true);
-            CoroutineManager.instance.StartCoroutine(LevelClear());
+            CoroutineManager.instance.StartCoroutine(LevelClearCoroutine());
         }
         else
         {
@@ -109,7 +119,7 @@ public class StageMng : Singleton<StageMng> {
         }
     }
     
-    IEnumerator LevelClear()
+    IEnumerator LevelClearCoroutine()
     {
         GameMng.GetInstance.ChangeState(new LevelClearState());
         _isStageStart = false;
@@ -117,7 +127,6 @@ public class StageMng : Singleton<StageMng> {
         _stageNum = 0;
         _levelText.gameObject.SetActive(false);
         _mainGamePanel.SetActive(false);
-        ScoreMng.GetInstance.AddScore(150);
         ScoreMng.GetInstance.Test();
     }
 }

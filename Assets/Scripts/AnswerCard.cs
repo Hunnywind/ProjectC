@@ -19,6 +19,18 @@ public class AnswerCard : SCard {
     {
         base.Init(num, d);
     }
+    public override void AddCardType(CardType type)
+    {
+        base.AddCardType(type);
+        switch (type)
+        {
+            case CardType.QUESTION_MARK:
+                _cardNumberText.text = "?";
+                break;
+            default:
+                break;
+        }
+    }
     private void OnMouseDown()
     {
         if (StageMng.GetInstance._isStageStart)
@@ -29,6 +41,7 @@ public class AnswerCard : SCard {
     }
     public override void ReturnCard()
     {
+        base.ReturnCard();
         gameObject.transform.parent.parent.GetComponent<Scales>().AddWeight(-_cardNumber, _cardDirection);
         CardMng.GetInstance.ReturnCard(this);
         gameObject.SetActive(false);

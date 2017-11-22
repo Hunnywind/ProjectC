@@ -13,6 +13,8 @@ public enum Direction
 [RequireComponent(typeof(BoxCollider2D))]
 
 public class SCard : MonoBehaviour {
+    protected List<CardType> _cardTypeList = new List<CardType>();
+
     protected Image _cardImage;
     protected Text _cardNumberText;
     protected int _cardNumber;
@@ -27,6 +29,10 @@ public class SCard : MonoBehaviour {
         _cardDirection = d;
         _cardNumberText.text = _cardNumber.ToString();
     }
+    public virtual void AddCardType(CardType type)
+    {
+        _cardTypeList.Add(type);
+    }
     public virtual void Start()
     {
         _cardImage = gameObject.GetComponent<Image>();
@@ -34,6 +40,6 @@ public class SCard : MonoBehaviour {
     }
     public virtual void ReturnCard()
     {
-
+        _cardTypeList.Clear();
     }
 }

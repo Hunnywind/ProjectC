@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum CardType
+{
+    QUESTION_MARK = 0,
+}
+
 public class CardMng : Singleton<CardMng> {
 
     [SerializeField]
@@ -17,6 +22,8 @@ public class CardMng : Singleton<CardMng> {
     private CardBox _questionBox;
     [SerializeField]
     private Text _mustUseCardCountText;
+
+    private List<SCard> _questionCardList = new List<SCard>();
 
     private int _mustUseCardCount;
     
@@ -52,6 +59,8 @@ public class CardMng : Singleton<CardMng> {
             CreateQuestionCard(item, Direction.RIGHT);
         }
         _mustUseCardCount = cardCount;
+
+        RuleSetting();
     }
     public void CreateQuestionCard(int num, Direction d)
     {
@@ -59,6 +68,7 @@ public class CardMng : Singleton<CardMng> {
         SCard cardScript = qCard.GetComponent<SCard>();
         cardScript.Init(num, d);
         _questionBox.CardInput(qCard, d);
+        _questionCardList.Add(cardScript);
     }
     public void CreateMovingCard(int num, Direction d)
     {
@@ -68,7 +78,7 @@ public class CardMng : Singleton<CardMng> {
         //    + _questionBox.gameObject.GetComponent<RectTransform>().anchoredPosition
         //    , _answerBox.GetObject(d));
     }
-    public void CreateAnswerCard(int num, Direction d)
+    public void CreateAnswerCard(int num, Direction d, List<CardType> list)
     {
         if (_mustUseCardCount < 1) return;
         _mustUseCardCount--;
@@ -77,6 +87,10 @@ public class CardMng : Singleton<CardMng> {
         cardScript.Init(num, d);
         _answerBox.CardInput(aCard, d);
         _answerBox.gameObject.GetComponent<Scales>().AddWeight(num, d);
+        for (int i = 0; i < list.Count; i++)
+        {
+            cardScript.AddCardType(list[i]);
+        }
     }
     public void ReturnCard(AnswerCard card)
     {
@@ -90,7 +104,16 @@ public class CardMng : Singleton<CardMng> {
     public void WeightSame()
     {
         if (_mustUseCardCount > 0 || !StageMng.GetInstance._isStageStart) return;
-        CoroutineManager.instance.StartCoroutine(StageMng.GetInstance.StageClear());
+        StageMng.GetInstance.StageClear();
         Debug.Log("Stage Clear");
+    }
+
+    public void RuleSetting()
+    {
+        if(RuleMng.GetInstance.isRuleBeing((int)CardType.QUESTION_MARK))
+        {
+            int ranNum = Random.Range(0, _questionCardList.Count);
+            _questionCardList[ranNum].AddCardType(CardType.QUESTION_MARK);
+        }
     }
 }

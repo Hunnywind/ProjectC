@@ -110,6 +110,13 @@ public class ScoreMng : Singleton<ScoreMng> {
                     _levelScore -= 10;
                 }
                 yield return new WaitForFixedUpdate();
+                if(_myScore >= _goalScore)
+                {
+                    _myScore = _goalScore;
+                    _levelScore = 0;
+                    yield return new WaitForSeconds(1f);
+                    RuleMng.GetInstance.NewRule();
+                }
                 //yield return new WaitForSeconds(_revision);
             }
             else
@@ -118,9 +125,8 @@ public class ScoreMng : Singleton<ScoreMng> {
                 yield return new WaitForSeconds(2f);
                 StageMng.GetInstance.LobbySetting();
                 Init();
-                break;
+                yield break;
             }
         }
-        yield return null;
     }
 }
