@@ -21,12 +21,23 @@ public class CardMng : Singleton<CardMng> {
     [SerializeField]
     private CardBox _questionBox;
     [SerializeField]
+    private GameObject[] _mustObjects;
+    [SerializeField]
     private Text _mustUseCardCountText;
+    [SerializeField]
+    private Text _mustUseLeftCardCountText;
+    [SerializeField]
+    private Text _mustUseRightCardCountText;
+
 
     private List<SCard> _questionCardList = new List<SCard>();
 
     private int _mustUseCardCount;
-    
+    private int _mustUseLeftCardCount;
+    private int _mustUseRightCardCount;
+
+    private bool _constLeftRight;
+
     private void Start()
     {
         Init();
@@ -34,6 +45,8 @@ public class CardMng : Singleton<CardMng> {
     private void Update()
     {
         _mustUseCardCountText.text = "x" + _mustUseCardCount.ToString();
+        _mustUseLeftCardCountText.text = "x" + _mustUseLeftCardCount.ToString();
+        _mustUseRightCardCountText.text = "x" + _mustUseRightCardCount.ToString();
     }
     void Init()
     {
@@ -43,6 +56,7 @@ public class CardMng : Singleton<CardMng> {
     }
     public void CardSetting(int cardKindCount, int cardCount)
     {
+        _constLeftRight = false;
         _answerBox.Clear();
         _questionBox.Clear();
 
@@ -59,6 +73,17 @@ public class CardMng : Singleton<CardMng> {
             CreateQuestionCard(item, Direction.RIGHT);
         }
         _mustUseCardCount = cardCount;
+
+        _mustUseLeftCardCount = 0;
+        foreach (var item in maker.GetAnswerCountList(Direction.LEFT))
+        {
+            _mustUseLeftCardCount += item;
+        }
+        _mustUseRightCardCount = 0;
+        foreach (var item in maker.GetAnswerCountList(Direction.RIGHT))
+        {
+            _mustUseRightCardCount += item;
+        }
 
         RuleSetting();
     }
@@ -81,7 +106,18 @@ public class CardMng : Singleton<CardMng> {
     public void CreateAnswerCard(int num, Direction d, List<CardType> list)
     {
         if (_mustUseCardCount < 1) return;
+        if (_constLeftRight)
+        {
+            if (_mustUseLeftCardCount == 0 && d == Direction.LEFT) return;
+            if (_mustUseRightCardCount == 0 && d == Direction.RIGHT) return;
+        }
+
         _mustUseCardCount--;
+        if (d == Direction.LEFT)
+            _mustUseLeftCardCount--;
+        else
+            _mustUseRightCardCount--;
+
         GameObject aCard = _aCardObjectPool.GetObject();
         SCard cardScript = aCard.GetComponent<SCard>();
         cardScript.Init(num, d);
@@ -95,6 +131,11 @@ public class CardMng : Singleton<CardMng> {
     public void ReturnCard(AnswerCard card)
     {
         _mustUseCardCount++;
+        if (card.GetDirection() == Direction.LEFT)
+            _mustUseLeftCardCount++;
+        else
+            _mustUseRightCardCount++;
+
         card.gameObject.transform.SetParent(_aCardObjectPool.gameObject.transform);
     }
     public void ReturnCard(QuestionCard card)
@@ -104,16 +145,36 @@ public class CardMng : Singleton<CardMng> {
     public void WeightSame()
     {
         if (_mustUseCardCount > 0 || !StageMng.GetInstance._isStageStart) return;
+        if (_constLeftRight && (_mustUseLeftCardCount != 0 || _mustUseRightCardCount != 0)) return;
+
         StageMng.GetInstance.StageClear();
         Debug.Log("Stage Clear");
     }
 
     public void RuleSetting()
     {
-        if(RuleMng.GetInstance.isRuleBeing((int)CardType.QUESTION_MARK))
+        _mustObjects[0].SetActive(true);
+        _mustObjects[1].SetActive(false);
+        _mustObjects[2].SetActive(false);
+        if (RuleMng.GetInstance.isRuleBeing((int)RuleType.QUESTION_MARK))
         {
-            int ranNum = Random.Range(0, _questionCardList.Count);
-            _questionCardList[ranNum].AddCardType(CardType.QUESTION_MARK);
+            int ran = Random.Range(0, 10);
+            if (ran > 3)
+            {
+                int ranNum = Random.Range(0, _questionCardList.Count);
+                _questionCardList[ranNum].AddCardType(CardType.QUESTION_MARK);
+            }
+        }
+        if(RuleMng.GetInstance.isRuleBeing((int)RuleType.CONST_LEFT_RIGHT))
+        {
+            int ranNum = Random.Range(0, 10);
+            if (ranNum > 6)
+            {
+                _constLeftRight = true;
+                _mustObjects[0].SetActive(false);
+                _mustObjects[1].SetActive(true);
+                _mustObjects[2].SetActive(true);
+            }
         }
     }
 }

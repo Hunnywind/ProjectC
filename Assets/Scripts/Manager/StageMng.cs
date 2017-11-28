@@ -31,6 +31,7 @@ public class StageMng : Singleton<StageMng> {
     
     private void Start()
     {
+        SoundMng.GetInstance.PlayBGM(0);
         Init();
         _levelText.text = "Level  " + (_stageNum + 1);
     }

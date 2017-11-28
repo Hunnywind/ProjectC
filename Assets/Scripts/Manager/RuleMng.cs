@@ -7,11 +7,17 @@ using UnityEngine;
 /// 룰을 정의합니다
 /// 카드 범위, 특수 카드 여부 등등
 /// </summary>
+public enum RuleType
+{
+    QUESTION_MARK = 0,
+    CONST_LEFT_RIGHT = 1,
+}
 public class RuleMng : Singleton<RuleMng> {
     private List<bool> _ruleList = new List<bool>();
 
     void Start()
     {
+        _ruleList.Add(false);
         _ruleList.Add(false);
     }
 
@@ -26,7 +32,9 @@ public class RuleMng : Singleton<RuleMng> {
                 {
                     StageMng.GetInstance.LobbySetting();
                 };
-                PopupMng.GetInstance.PopupMessage("New Rule", "? Card", BUTTON_KIND.OK, null, null, action);
+
+                var data = GameData.GetInstance.GetGameData(DataKind.RULETEXT, i, "Content");
+                PopupMng.GetInstance.PopupMessage("New Rule", data, BUTTON_KIND.OK, null, null, action);
                 break;
             }
         }

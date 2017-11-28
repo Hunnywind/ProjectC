@@ -7,6 +7,7 @@ public enum DataKind
 {
     NORMALSTAGE,
     RULESCORE,
+    RULETEXT,
 }
 
 public class GameData : Singleton<GameData> {
@@ -21,6 +22,7 @@ public class GameData : Singleton<GameData> {
     {
         LoadData(DataKind.NORMALSTAGE);
         LoadData(DataKind.RULESCORE);
+        LoadData(DataKind.RULETEXT);
     }
     private void LoadData(DataKind dataKind)
     {
@@ -36,6 +38,9 @@ public class GameData : Singleton<GameData> {
                 break;
             case DataKind.RULESCORE:
                 directory = "RuleScore";
+                break;
+            case DataKind.RULETEXT:
+                directory = "RuleText";
                 break;
             default:
                 break;
@@ -61,6 +66,7 @@ public class GameData : Singleton<GameData> {
             Dictionary<string, string> valueD = new Dictionary<string, string>();
             for (int j = 0; j < values.Length; j++)
             {
+                values[j] = values[j].Replace("@", ",");
                 valueD.Add(keys[j], values[j]);
             }
             data.Add(i-1, valueD);
@@ -78,6 +84,9 @@ public class GameData : Singleton<GameData> {
                 break;
             case DataKind.RULESCORE:
                 dataName = "RuleScore";
+                break;
+            case DataKind.RULETEXT:
+                dataName = "RuleText";
                 break;
             default:
                 break;

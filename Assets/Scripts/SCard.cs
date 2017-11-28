@@ -21,7 +21,7 @@ public class SCard : MonoBehaviour {
     protected Direction _cardDirection;
 
     public int GetCardNumber() { return _cardNumber; }
-
+    public Direction GetDirection() { return _cardDirection; }
 
     public virtual void Init(int num, Direction d)
     {
