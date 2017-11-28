@@ -6,6 +6,7 @@ using System.Text;
 public enum DataKind
 {
     NORMALSTAGE,
+    RULESCORE,
 }
 
 public class GameData : Singleton<GameData> {
@@ -19,6 +20,7 @@ public class GameData : Singleton<GameData> {
     private void Init()
     {
         LoadData(DataKind.NORMALSTAGE);
+        LoadData(DataKind.RULESCORE);
     }
     private void LoadData(DataKind dataKind)
     {
@@ -31,6 +33,9 @@ public class GameData : Singleton<GameData> {
         {
             case DataKind.NORMALSTAGE:
                 directory = "NormalStage";
+                break;
+            case DataKind.RULESCORE:
+                directory = "RuleScore";
                 break;
             default:
                 break;
@@ -70,6 +75,9 @@ public class GameData : Singleton<GameData> {
         {
             case DataKind.NORMALSTAGE:
                 dataName = "NormalStage";
+                break;
+            case DataKind.RULESCORE:
+                dataName = "RuleScore";
                 break;
             default:
                 break;

@@ -32,19 +32,20 @@ public class StageMng : Singleton<StageMng> {
     private void Start()
     {
         Init();
-        
+        _levelText.text = "Level  " + (_stageNum + 1);
     }
     private void Update()
     {
-        _levelText.text = "Level  " + _stageNum;
+        //_levelText.text = "Level  " + _stageNum;
     }
     private void FixedUpdate()
     {
         if (_isStageStart)
         {
             _time += Time.deltaTime;
-            int second = (int)_time;
-            _timeText.text = second.ToString();
+            //int second = (int)_time;
+            //_timeText.text = second.ToString();
+            _timeText.text = _time.ToString("F2");
         }
     }
     void Init()
@@ -71,6 +72,7 @@ public class StageMng : Singleton<StageMng> {
     }
     public void StageStart()
     {
+        _levelText.text = "Level  " + (_stageNum + 1);
         _time = 0f;
         GameMng.GetInstance.ChangeState(new PlayState());
         _stageUseObject.SetActive(true);
@@ -79,7 +81,7 @@ public class StageMng : Singleton<StageMng> {
         _levelClear.SetActive(false);
 
         _isStageStart = true;
-        var count = GameData.GetInstance.GetGameData(DataKind.NORMALSTAGE,_stageNum,"CardCount");
+        var count = GameData.GetInstance.GetGameData(DataKind.NORMALSTAGE, _stageNum, "CardCount");
         int cardCount = int.Parse(count);
         var kind = GameData.GetInstance.GetGameData(DataKind.NORMALSTAGE, _stageNum, "CardKind");
         int cardKind = int.Parse(kind);
@@ -105,7 +107,7 @@ public class StageMng : Singleton<StageMng> {
         _stageNum++;
         ScoreMng.GetInstance.SetTime(_time);
         ScoreMng.GetInstance.StageClear();
-        if (_stageNum > 5)
+        if (_stageNum > 6)
         {
             _levelClear.SetActive(true);
             CoroutineManager.instance.StartCoroutine(LevelClearCoroutine());

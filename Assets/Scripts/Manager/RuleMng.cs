@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +22,11 @@ public class RuleMng : Singleton<RuleMng> {
             if(!_ruleList[i])
             {
                 _ruleList[i] = true;
+                Action<bool> action = a =>
+                {
+                    StageMng.GetInstance.LobbySetting();
+                };
+                PopupMng.GetInstance.PopupMessage("New Rule", "? Card", BUTTON_KIND.OK, null, null, action);
                 break;
             }
         }

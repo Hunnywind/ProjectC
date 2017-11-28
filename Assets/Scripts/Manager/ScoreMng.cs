@@ -20,6 +20,7 @@ public class ScoreMng : Singleton<ScoreMng> {
     private int _showScore = 0;
     private int _preStageScore = 0;
     private int _levelScore = 0;
+    private int _ruleCount = 0;
 
     private int _difficulty;
     private float _time;
@@ -39,13 +40,13 @@ public class ScoreMng : Singleton<ScoreMng> {
         _levelScore = 0;
         _preStageScore = 0;
 
-        TestInit();
+        GoalScoreSetting();
+    }
+    private void GoalScoreSetting()
+    {
+        _goalScore = int.Parse(GameData.GetInstance.GetGameData(DataKind.RULESCORE, _ruleCount, "Score"));
     }
 
-    private void TestInit()
-    {
-        _goalScore = 10000;
-    }
     private void Update()
     {
         //_scoreText.text = _showScore.ToString();
@@ -109,6 +110,11 @@ public class ScoreMng : Singleton<ScoreMng> {
                     _myScore += 10;
                     _levelScore -= 10;
                 }
+                if(_levelScore > 100)
+                {
+                    _myScore += 100;
+                    _levelScore -= 100;
+                }
                 yield return new WaitForFixedUpdate();
                 if(_myScore >= _goalScore)
                 {
@@ -116,6 +122,11 @@ public class ScoreMng : Singleton<ScoreMng> {
                     _levelScore = 0;
                     yield return new WaitForSeconds(1f);
                     RuleMng.GetInstance.NewRule();
+                    _myScore = 0;
+                    _ruleCount++;
+                    GoalScoreSetting();
+                    Init();
+                    yield break;
                 }
                 //yield return new WaitForSeconds(_revision);
             }
