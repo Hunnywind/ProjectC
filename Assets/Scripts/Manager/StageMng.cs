@@ -31,7 +31,6 @@ public class StageMng : Singleton<StageMng> {
     
     private void Start()
     {
-        SoundMng.GetInstance.PlayBGM(0);
         Init();
         _levelText.text = "Level  " + (_stageNum + 1);
     }
@@ -59,6 +58,7 @@ public class StageMng : Singleton<StageMng> {
     {
         if(GameMng.GetInstance.GetStageName().Equals("LOBBY"))
         {
+            SoundMng.GetInstance.PlayBGM(0);
             StageStart();
         }
     }
@@ -98,6 +98,7 @@ public class StageMng : Singleton<StageMng> {
     public void LevelClear()
     {
         // Cheat
+        _levelClear.SetActive(true);
         ScoreMng.GetInstance.AddScore(5000);
         ScoreMng.GetInstance.StageClear();
         CoroutineManager.instance.StartCoroutine(LevelClearCoroutine());
@@ -115,8 +116,12 @@ public class StageMng : Singleton<StageMng> {
         }
         else
         {
+            SoundMng.GetInstance.PauseBGM();
+            SoundMng.GetInstance.Play(2);
             _stageClear.SetActive(true);
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(2f);
+            SoundMng.GetInstance.UnpauseBGM();
+            yield return new WaitForSeconds(1f);
             _stageClear.SetActive(false);
             StageStart();
         }
@@ -124,6 +129,8 @@ public class StageMng : Singleton<StageMng> {
     
     IEnumerator LevelClearCoroutine()
     {
+        SoundMng.GetInstance.StopBGM();
+        SoundMng.GetInstance.Play(1);
         GameMng.GetInstance.ChangeState(new LevelClearState());
         _isStageStart = false;
         yield return new WaitForSeconds(3f);

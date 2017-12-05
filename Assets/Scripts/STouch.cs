@@ -86,9 +86,12 @@ public class STouch : MonoBehaviour
     {
         switch (type)
         {
-            case "begin": Debug.Log("down:" + x + "," + y); break;
-            case "end": Debug.Log("end:" + x + "," + y + ", d:" + dx + "," + dy); break;
-            case "move": Debug.Log("move:" + x + "," + y + ", d:" + dx + "," + dy); break;
+            case "begin": //Debug.Log("down:" + x + "," + y);
+                break;
+            case "end": //Debug.Log("end:" + x + "," + y + ", d:" + dx + "," + dy);
+                break;
+            case "move": //Debug.Log("move:" + x + "," + y + ", d:" + dx + "," + dy);
+                break;
         }
     }
     public void Touch(string type, int id, float x, float y, float dx, float dy)
@@ -97,15 +100,16 @@ public class STouch : MonoBehaviour
         {
             case "begin":
                 {
-                    Debug.Log("down:" + x + "," + y);
+                    //Debug.Log("down:" + x + "," + y);
                     //if (GameMng.GetInstance != null)
                     //    GameMng.GetInstance.Touch(x, y);
                     break;
                 }
-            case "end": Debug.Log("end:" + x + "," + y + ", d:" + dx + "," + dy); break;
+            case "end": //Debug.Log("end:" + x + "," + y + ", d:" + dx + "," + dy);
+                break;
             case "move":
                 {
-                    Debug.Log("move:" + x + "," + y + ", d:" + dx + "," + dy);
+                    //Debug.Log("move:" + x + "," + y + ", d:" + dx + "," + dy);
                     break;
                 }
         }

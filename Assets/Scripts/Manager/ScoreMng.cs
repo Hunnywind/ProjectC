@@ -112,6 +112,7 @@ public class ScoreMng : Singleton<ScoreMng> {
                 }
                 if(_levelScore > 100)
                 {
+                    SoundMng.GetInstance.Play(3);
                     _myScore += 100;
                     _levelScore -= 100;
                 }

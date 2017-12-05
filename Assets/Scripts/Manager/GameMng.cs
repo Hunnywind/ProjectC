@@ -14,10 +14,12 @@ public class GameMng : Singleton<GameMng>{
         DontDestroyOnLoad(gameObject);
     }
     void Start () {
-        
+#if UNITY_EDITOR
         SceneManager.LoadScene("Main");
-        
-	}
+#elif UNITY_ANDROID
+        SceneManager.LoadScene("Title");
+#endif
+    }
     public void Touch(float x, float y)
     {
         if (StageMng.GetInstance != null)

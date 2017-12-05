@@ -36,6 +36,7 @@ public class AnswerCard : SCard {
         if (StageMng.GetInstance._isStageStart)
         {
             ScoreMng.GetInstance.SubtractCard();
+            SoundMng.GetInstance.Play(0);
             ReturnCard();
         }
     }

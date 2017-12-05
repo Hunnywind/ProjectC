@@ -112,6 +112,7 @@ public class CardMng : Singleton<CardMng> {
             if (_mustUseRightCardCount == 0 && d == Direction.RIGHT) return;
         }
 
+        SoundMng.GetInstance.Play(0);
         _mustUseCardCount--;
         if (d == Direction.LEFT)
             _mustUseLeftCardCount--;

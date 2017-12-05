@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class SoundMng : Singleton<SoundMng> {
 
@@ -9,6 +10,11 @@ public class SoundMng : Singleton<SoundMng> {
 
     public AudioSource[] SFXSource;
     public AudioClip[] soundClip;
+
+    public AudioMixerSnapshot volumeDown;           //Reference to Audio mixer snapshot in which the master volume of main mixer is turned down
+    public AudioMixerSnapshot volumeUp;				//Reference to Audio mixer snapshot in which the master volume of main mixer is turned up
+
+    public AudioMixer mixer;
 
     private bool isSEPlay = true;
     public bool IsSEplay { set { isSEPlay = value; } }
@@ -28,6 +34,14 @@ public class SoundMng : Singleton<SoundMng> {
     public void StopBGM()
     {
         BGMSource.Stop();
+    }
+    public void PauseBGM()
+    {
+        BGMSource.Pause();
+    }
+    public void UnpauseBGM()
+    {
+        BGMSource.UnPause();
     }
     public void Play(int id)
     {
