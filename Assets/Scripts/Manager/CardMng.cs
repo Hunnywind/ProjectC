@@ -157,25 +157,17 @@ public class CardMng : Singleton<CardMng> {
         _mustObjects[0].SetActive(true);
         _mustObjects[1].SetActive(false);
         _mustObjects[2].SetActive(false);
-        if (RuleMng.GetInstance.isRuleBeing((int)RuleType.QUESTION_MARK))
+        if (RuleMng.GetInstance.isRuleBeing(RuleType.QUESTION_MARK))
         {
-            int ran = Random.Range(0, 10);
-            if (ran > 3)
-            {
                 int ranNum = Random.Range(0, _questionCardList.Count);
                 _questionCardList[ranNum].AddCardType(CardType.QUESTION_MARK);
-            }
         }
-        if(RuleMng.GetInstance.isRuleBeing((int)RuleType.CONST_LEFT_RIGHT))
+        if(RuleMng.GetInstance.isRuleBeing(RuleType.CONST_LEFT_RIGHT))
         {
-            int ranNum = Random.Range(0, 10);
-            if (ranNum > 6)
-            {
                 _constLeftRight = true;
                 _mustObjects[0].SetActive(false);
                 _mustObjects[1].SetActive(true);
                 _mustObjects[2].SetActive(true);
-            }
         }
     }
 }

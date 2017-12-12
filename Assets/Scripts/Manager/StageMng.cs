@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class StageMng : Singleton<StageMng> {
 
-    private int _stageNum;
+    
 
     [SerializeField]
     private GameObject _stageUseObject;
@@ -27,6 +27,8 @@ public class StageMng : Singleton<StageMng> {
     private Scales _scales;
 
     public bool _isStageStart { private set; get; }
+    public int _stageNum { private set; get; }
+
     private float _time;
     
     private void Start()
@@ -73,6 +75,8 @@ public class StageMng : Singleton<StageMng> {
     }
     public void StageStart()
     {
+        RuleMng.GetInstance.Setting();
+        RuleMng.GetInstance.SetCurrentRule(_stageNum);
         _levelText.text = "Level  " + (_stageNum + 1);
         _time = 0f;
         GameMng.GetInstance.ChangeState(new PlayState());
@@ -82,9 +86,10 @@ public class StageMng : Singleton<StageMng> {
         _levelClear.SetActive(false);
 
         _isStageStart = true;
-        var count = GameData.GetInstance.GetGameData(DataKind.NORMALSTAGE, _stageNum, "CardCount");
+        int id = RuleMng.GetInstance.RuleCount * 7 + _stageNum;
+        var count = GameData.GetInstance.GetGameData(DataKind.NORMALSTAGE, id, "CardCount");
         int cardCount = int.Parse(count);
-        var kind = GameData.GetInstance.GetGameData(DataKind.NORMALSTAGE, _stageNum, "CardKind");
+        var kind = GameData.GetInstance.GetGameData(DataKind.NORMALSTAGE, id, "CardKind");
         int cardKind = int.Parse(kind);
 
         CardMng.GetInstance.CardSetting(cardKind, cardCount);
@@ -99,7 +104,7 @@ public class StageMng : Singleton<StageMng> {
     {
         // Cheat
         _levelClear.SetActive(true);
-        ScoreMng.GetInstance.AddScore(5000);
+        ScoreMng.GetInstance.AddScore(100000);
         ScoreMng.GetInstance.StageClear();
         CoroutineManager.instance.StartCoroutine(LevelClearCoroutine());
     }

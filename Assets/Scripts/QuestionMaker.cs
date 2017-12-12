@@ -110,7 +110,12 @@ public class QuestionMaker {
     private void CardNumberDecision()
     {
         var ranNumList = new List<int>();
-        for (int i = 1; i < 11; i++)
+        int maxNum = 11;
+        if (RuleMng.GetInstance.isRuleBeing(RuleType.BIG_NUMBER))
+        {
+            maxNum = 51;
+        }
+        for (int i = 1; i < maxNum; i++)
         {
             ranNumList.Add(i);
         }

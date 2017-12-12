@@ -44,6 +44,7 @@ public class ScoreMng : Singleton<ScoreMng> {
     }
     private void GoalScoreSetting()
     {
+        if (RuleMng.GetInstance.IsAllRuleOpen) return;
         _goalScore = int.Parse(GameData.GetInstance.GetGameData(DataKind.RULESCORE, _ruleCount, "Score"));
     }
 
@@ -51,7 +52,11 @@ public class ScoreMng : Singleton<ScoreMng> {
     {
         //_scoreText.text = _showScore.ToString();
         _stageScoreText.text = "Obtain Score: " + _levelScore;
-        _percentText.text = "New Rule " + ((int)(((float)_myScore / _goalScore) * 100)).ToString() + "%";
+
+        if (!RuleMng.GetInstance.IsAllRuleOpen)
+            _percentText.text = "New Rule " + ((int)(((float)_myScore / _goalScore) * 100)).ToString() + "%";
+        else
+            _percentText.text = "All Rule Open";
     }
 
     public void Test()
@@ -71,18 +76,21 @@ public class ScoreMng : Singleton<ScoreMng> {
     }
     public void StageClear()
     {
+        int baseScore = 50;
+        int stageNum = StageMng.GetInstance._stageNum;
+        int stageRuleCount = RuleMng.GetInstance.PreStageRuleCount;
         float timeValue = 0;
-        if (_time < 10.0f)
-            timeValue = 2;
-        else if (_time < 30.0f)
-            timeValue = 1;
-        else if (_time < 60.0f)
-            timeValue = 0.5f;
-        else
-            timeValue = 0.1f;
 
-        var value = timeValue * _difficulty * 10;
-        AddScore((int)value);
+        if (_time < 30.0f)
+            timeValue = (30.0f - _time) * 40 + (60.0f - 30) * 20 + (120.0f - 60) * 10 + baseScore;
+        else if (_time < 60.0f)
+            timeValue = (60.0f - _time) * 20 + (120.0f - 60) * 10 + baseScore;
+        else if (_time < 120.0f)
+            timeValue = (120.0f - _time) * 10 + baseScore;
+        else
+            timeValue = baseScore;
+        int score = (int)((timeValue * (stageNum + 1)) + (stageRuleCount * 100));
+        AddScore(score);
         _preStageScore = Mathf.Max(_preStageScore, 0);
         Debug.Log(_preStageScore);
         _levelScore += _preStageScore;
@@ -116,8 +124,13 @@ public class ScoreMng : Singleton<ScoreMng> {
                     _myScore += 100;
                     _levelScore -= 100;
                 }
+                if(_levelScore > 1000)
+                {
+                    _myScore += 1000;
+                    _levelScore -= 1000;
+                }
                 yield return new WaitForFixedUpdate();
-                if(_myScore >= _goalScore)
+                if(_myScore >= _goalScore && !RuleMng.GetInstance.IsAllRuleOpen)
                 {
                     _myScore = _goalScore;
                     _levelScore = 0;

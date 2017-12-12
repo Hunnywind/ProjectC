@@ -9,12 +9,16 @@ public class SetAudioLevels : MonoBehaviour {
     public Slider musicSlider;
     public Slider sfxSlider;
 
-    private void Start()
+    public void Start()
+    {
+        Init();
+        gameObject.SetActive(false);
+    }
+    public void Init()
     {
         SetMusicLevel(musicSlider.value);
         SetSfxLevel(sfxSlider.value);
     }
-
     //Call this function and pass in the float parameter musicLvl to set the volume of the AudioMixerGroup Music in mainMixer
     public void SetMusicLevel(float musicLvl)
 	{
