@@ -34,7 +34,7 @@ public class StageMng : Singleton<StageMng> {
     private void Start()
     {
         Init();
-        _levelText.text = "Level  " + (_stageNum + 1);
+        _levelText.text = "Level  (" + (_stageNum + 1) + "/7)";
     }
     private void Update()
     {
@@ -77,7 +77,7 @@ public class StageMng : Singleton<StageMng> {
     {
         RuleMng.GetInstance.Setting();
         RuleMng.GetInstance.SetCurrentRule(_stageNum);
-        _levelText.text = "Level  " + (_stageNum + 1);
+        _levelText.text = "Level  (" + (_stageNum + 1) + "/7)";
         _time = 0f;
         GameMng.GetInstance.ChangeState(new PlayState());
         _stageUseObject.SetActive(true);
