@@ -25,7 +25,7 @@ public class RuleMng : Singleton<RuleMng> {
         private set; get;
     }
 
-    void Start()
+    private void Start()
     {
         IsAllRuleOpen = false;
         _ruleList.Add(false);
@@ -35,6 +35,16 @@ public class RuleMng : Singleton<RuleMng> {
         _currentStageRuleList.Add(RuleType.QUESTION_MARK, false);
         _currentStageRuleList.Add(RuleType.CONST_LEFT_RIGHT, false);
         _currentStageRuleList.Add(RuleType.BIG_NUMBER, false);
+
+        LoadGame();
+    }
+    private void LoadGame()
+    {
+        RuleCount = GameMng.GetInstance.LoadGame("PreRuleCount");
+        for (int i = 0; i < RuleCount; i++)
+        {
+            NewRule(false);
+        }
     }
     /// <summary>
     /// 스테이지 시작시마다 호출 해야하는 함수
@@ -49,7 +59,7 @@ public class RuleMng : Singleton<RuleMng> {
         }
         RuleCount = openRules;
     }
-    public void NewRule()
+    public void NewRule(bool isShowPopup = true)
     {
         for (int i = 0; i < _ruleList.Count; i++)
         {
@@ -57,13 +67,17 @@ public class RuleMng : Singleton<RuleMng> {
             {
                 _ruleList[i] = true;
                 RuleCheck();
-
-                Action<bool> action = a =>
+                if (isShowPopup)
                 {
-                    StageMng.GetInstance.LobbySetting();
-                };
-                var data = GameData.GetInstance.GetGameData(DataKind.RULETEXT, i, "Content");
-                PopupMng.GetInstance.PopupMessage("New Rule", data, BUTTON_KIND.OK, null, null, action);
+                    RuleCount++;
+                    GameMng.GetInstance.SaveGame("PreRuleCount", i + 1);
+                    Action<bool> action = a =>
+                    {
+                        StageMng.GetInstance.LobbySetting();
+                    };
+                    var data = GameData.GetInstance.GetGameData(DataKind.RULETEXT, i, "Content");
+                    PopupMng.GetInstance.PopupMessage("New Rule", data, BUTTON_KIND.OK, null, null, action);
+                }
                 break;
             }
         }

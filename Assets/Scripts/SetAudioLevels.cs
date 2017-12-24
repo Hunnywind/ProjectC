@@ -11,23 +11,25 @@ public class SetAudioLevels : MonoBehaviour {
 
     public void Start()
     {
-        Init();
-        gameObject.SetActive(false);
     }
     public void Init()
     {
+        musicSlider.value = GameMng.GetInstance.LoadGameFloat("musicVol") == -1 ? 0 : GameMng.GetInstance.LoadGameFloat("musicVol");
+        sfxSlider.value = GameMng.GetInstance.LoadGameFloat("sfxVol") == -1 ? 0 : GameMng.GetInstance.LoadGameFloat("sfxVol");
         SetMusicLevel(musicSlider.value);
         SetSfxLevel(sfxSlider.value);
     }
     //Call this function and pass in the float parameter musicLvl to set the volume of the AudioMixerGroup Music in mainMixer
     public void SetMusicLevel(float musicLvl)
 	{
-		mainMixer.SetFloat("musicVol", musicLvl);
+        mainMixer.SetFloat("musicVol", musicLvl);
+        GameMng.GetInstance.SaveGame("musicVol", musicLvl);
 	}
 
 	//Call this function and pass in the float parameter sfxLevel to set the volume of the AudioMixerGroup SoundFx in mainMixer
 	public void SetSfxLevel(float sfxLevel)
 	{
 		mainMixer.SetFloat("sfxVol", sfxLevel);
-	}
+        GameMng.GetInstance.SaveGame("sfxVol", sfxLevel);
+    }
 }

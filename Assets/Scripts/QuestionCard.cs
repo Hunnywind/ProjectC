@@ -7,6 +7,10 @@ using UnityEngine.UI;
 [RequireComponent(typeof(BoxCollider2D))]
 
 public class QuestionCard : SCard {
+    public override void Awake()
+    {
+        base.Awake();
+    }
     public override void Start()
     {
         base.Start();
@@ -29,7 +33,15 @@ public class QuestionCard : SCard {
     }
     private void OnMouseDown()
     {
-        //CardMng.GetInstance.CreateMovingCard(_cardNumber, _cardDirection);
+        if (!StageMng.GetInstance._isStageStart) return;
+
+        foreach (var item in _cardTypeList)
+        {
+            if (item == CardType.QUESTION_MARK)
+            {
+                ScoreMng.GetInstance.AddQuestion(1);
+            }
+        }
         CardMng.GetInstance.CreateAnswerCard(_cardNumber, _cardDirection, _cardTypeList);
     }
     public override void ReturnCard()

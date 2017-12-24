@@ -33,10 +33,14 @@ public class SCard : MonoBehaviour {
     {
         _cardTypeList.Add(type);
     }
-    public virtual void Start()
+    public virtual void Awake()
     {
         _cardImage = gameObject.GetComponent<Image>();
         _cardNumberText = gameObject.GetComponentInChildren<Text>();
+    }
+    public virtual void Start()
+    {
+        
     }
     public virtual void ReturnCard()
     {

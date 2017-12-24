@@ -6,8 +6,9 @@ using UnityEngine.UI;
 
 public class StageMng : Singleton<StageMng> {
 
-    
 
+    [SerializeField]
+    private Animator[] _towers;
     [SerializeField]
     private GameObject _stageUseObject;
     [SerializeField]
@@ -25,6 +26,8 @@ public class StageMng : Singleton<StageMng> {
 
     [SerializeField]
     private Scales _scales;
+    [SerializeField]
+    private SetAudioLevels _audio;
 
     public bool _isStageStart { private set; get; }
     public int _stageNum { private set; get; }
@@ -34,7 +37,7 @@ public class StageMng : Singleton<StageMng> {
     private void Start()
     {
         Init();
-        _levelText.text = "Level  (" + (_stageNum + 1) + "/7)";
+        _levelText.text = "Level  (" + (_stageNum + 1) + " / 7)";
     }
     private void Update()
     {
@@ -52,6 +55,7 @@ public class StageMng : Singleton<StageMng> {
     }
     void Init()
     {
+        _audio.Init();
         _stageNum = 0;
         _isStageStart = false;
         LobbySetting();
@@ -60,6 +64,12 @@ public class StageMng : Singleton<StageMng> {
     {
         if(GameMng.GetInstance.GetStageName().Equals("LOBBY"))
         {
+            foreach (var item in _towers)
+            {
+                item.gameObject.SetActive(false);
+            }
+            _towers[0].gameObject.SetActive(true);
+            _towers[0].SetTrigger("drop");
             SoundMng.GetInstance.PlayBGM(0);
             StageStart();
         }
@@ -77,7 +87,7 @@ public class StageMng : Singleton<StageMng> {
     {
         RuleMng.GetInstance.Setting();
         RuleMng.GetInstance.SetCurrentRule(_stageNum);
-        _levelText.text = "Level  (" + (_stageNum + 1) + "/7)";
+        _levelText.text = "Level  (" + (_stageNum + 1) + " / 7)";
         _time = 0f;
         GameMng.GetInstance.ChangeState(new PlayState());
         _stageUseObject.SetActive(true);
@@ -111,11 +121,14 @@ public class StageMng : Singleton<StageMng> {
     public IEnumerator StageClearCoroutine()
     {
         _isStageStart = false;
+        _towers[_stageNum+1].gameObject.SetActive(true);
+        _towers[_stageNum + 1].SetTrigger("drop");
         _stageNum++;
         ScoreMng.GetInstance.SetTime(_time);
         ScoreMng.GetInstance.StageClear();
         if (_stageNum > 6)
         {
+            ScoreMng.GetInstance.SetActivePreRuleScore(false);
             _levelClear.SetActive(true);
             CoroutineManager.instance.StartCoroutine(LevelClearCoroutine());
         }
@@ -124,10 +137,12 @@ public class StageMng : Singleton<StageMng> {
             SoundMng.GetInstance.PauseBGM();
             SoundMng.GetInstance.Play(2);
             _stageClear.SetActive(true);
+            ScoreMng.GetInstance.SetActivePreRuleScore(false);
             yield return new WaitForSeconds(2f);
             SoundMng.GetInstance.UnpauseBGM();
             yield return new WaitForSeconds(1f);
             _stageClear.SetActive(false);
+            ScoreMng.GetInstance.SetActivePreRuleScore(true);
             StageStart();
         }
     }

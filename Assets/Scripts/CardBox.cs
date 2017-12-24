@@ -5,33 +5,63 @@ using UnityEngine;
 public class CardBox : MonoBehaviour {
 
     [SerializeField]
-    private GameObject _leftBox;
+    private GameObject[] _leftBox;
     [SerializeField]
-    private GameObject _rightBox;
+    private GameObject[] _rightBox;
+
+    private int _leftCount = 0;
+    private int _rightCount = 0;
 
     public void CardInput(GameObject card, Direction direction)
     {
         if (direction == Direction.LEFT)
-            card.transform.SetParent(_leftBox.transform);
+        {
+            if (_leftCount < 5)
+                card.transform.SetParent(_leftBox[0].transform);
+            else
+                card.transform.SetParent(_leftBox[1].transform);
+            _leftCount++;
+        }
         else
-            card.transform.SetParent(_rightBox.transform);
+        {
+            if(_rightCount < 5)
+                card.transform.SetParent(_rightBox[0].transform);
+            else
+                card.transform.SetParent(_rightBox[1].transform);
+            _rightCount++;
+        }
     }
     public void Clear()
     {
-        foreach (var item in _leftBox.GetComponentsInChildren<SCard>())
+        for (int i = 0; i < _leftBox.Length; i++)
         {
-            item.ReturnCard();
+            foreach (var item in _leftBox[i].GetComponentsInChildren<SCard>())
+            {
+                item.ReturnCard();
+            }
         }
-        foreach (var item in _rightBox.GetComponentsInChildren<SCard>())
+        for (int i = 0; i < _rightBox.Length; i++)
         {
-            item.ReturnCard();
+            foreach (var item in _rightBox[i].GetComponentsInChildren<SCard>())
+            {
+                item.ReturnCard();
+            }
         }
+        _leftCount = 0;
+        _rightCount = 0;
     }
-    public GameObject GetObject(Direction direction)
+    public void DeleteCard(Direction direction)
     {
         if (direction == Direction.LEFT)
-            return _leftBox;
+            _leftCount--;
         else
-            return _rightBox;
+            _rightCount--;
     }
+    //public GameObject GetObject(Direction direction)
+    //{
+    //    if (direction == Direction.LEFT)
+    //        return _leftBox;
+    //    else
+    //        return _rightBox;
+    //}
 }

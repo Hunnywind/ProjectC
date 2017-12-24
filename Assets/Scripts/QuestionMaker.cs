@@ -14,9 +14,11 @@ public class QuestionMaker {
     private List<int> _numberRight = new List<int>();
 
     private int _remainCardCount;
+    private int _calCount;
 
     public void Init(int cardKindCount, int cardCount)
     {
+        _calCount = 0;
         _cardKindCount = cardKindCount;
         _cardCount = cardCount;
         _remainCardCount = _cardCount;
@@ -38,6 +40,15 @@ public class QuestionMaker {
         _numberRight.Add(0);
         _numberRight.Add(0);
     }
+    private void Clear()
+    {
+        Debug.Log("Clear Active");
+        _calCount = 0;
+        _answerLeftCount.Clear();
+        _answerRightCount.Clear();
+        _numberLeft.Clear();
+        _numberRight.Clear();
+    }
     public void Setting()
     {
         UnbalanceSetting();
@@ -45,7 +56,16 @@ public class QuestionMaker {
         CardNumberDecision();
         while(!Check())
         {
+            if (_calCount > 500)
+            {
+                Clear();
+                Init(_cardKindCount, _cardCount);
+                UnbalanceSetting();
+                AnswerDecision();
+                _calCount = 0;
+            }
             CardNumberDecision();
+            
         }
     }
     public List<int> GetAnswerCountList(Direction direction)
@@ -113,7 +133,7 @@ public class QuestionMaker {
         int maxNum = 11;
         if (RuleMng.GetInstance.isRuleBeing(RuleType.BIG_NUMBER))
         {
-            maxNum = 51;
+            maxNum = 31;
         }
         for (int i = 1; i < maxNum; i++)
         {
@@ -155,9 +175,17 @@ public class QuestionMaker {
         }
 
         if (leftResult == rightResult)
+        {
+            Debug.Log("CalCount = " + _calCount);
             return true;
+        }
         else
         {
+            _calCount++;
+            if(_calCount > 1000)
+            {
+                Debug.Log("Warning!!! Calucount 1000 over");
+            }
             return false;
         }
     }

@@ -7,13 +7,14 @@ public class ScoreMng : Singleton<ScoreMng> {
     private Text _scoreText;
     [SerializeField]
     private Text _percentText;
-    [SerializeField]
-    private Text _stageScoreText;
 
     [SerializeField]
     private float _scoreCalTime = 3f;
     [SerializeField]
     private int _cardRemoveScore = 100;
+
+    [SerializeField]
+    private Text[] _scoreTexts;
 
     private int _goalScore = 0;
     private int _myScore = 0;
@@ -22,10 +23,18 @@ public class ScoreMng : Singleton<ScoreMng> {
     private int _levelScore = 0;
     private int _ruleCount = 0;
 
+    private int _finalObtainScore = 0;
+    private int _finalScore = 0;
+    private int _finalQuestionCount = 0;
+    private int _finalRemoveCardCount = 0;
+
     private int _difficulty;
     private float _time;
 
     private float _revision;
+
+    private int _obtainedScores = 0;
+    private int _highScore = 0;
 
     private void Start()
     {
@@ -33,14 +42,29 @@ public class ScoreMng : Singleton<ScoreMng> {
     }
     void Init()
     {
-        //_scoreText.gameObject.SetActive(true);
-        _stageScoreText.gameObject.SetActive(false);
+        LoadGame();
+        _scoreText.gameObject.SetActive(true);
+        foreach (var item in _scoreTexts)
+        {
+            item.gameObject.SetActive(false);
+        }
         _percentText.gameObject.SetActive(true);
 
+        _finalQuestionCount = 0;
+        _finalScore = 0;
+        _finalRemoveCardCount = 0;
         _levelScore = 0;
         _preStageScore = 0;
+        _scoreText.text = "Score " + _levelScore;
 
         GoalScoreSetting();
+    }
+    private void LoadGame()
+    {
+        _obtainedScores = GameMng.GetInstance.LoadGame("ObtainedScore");
+        _highScore = GameMng.GetInstance.LoadGame("HighScore");
+        _myScore = GameMng.GetInstance.LoadGame("PreRuleScore");
+        _ruleCount = RuleMng.GetInstance.RuleCount;
     }
     private void GoalScoreSetting()
     {
@@ -50,19 +74,23 @@ public class ScoreMng : Singleton<ScoreMng> {
 
     private void Update()
     {
-        //_scoreText.text = _showScore.ToString();
-        _stageScoreText.text = "Obtain Score: " + _levelScore;
+        _scoreTexts[0].text = "Obtain Score	: " + _finalObtainScore;
+        _scoreTexts[1].text = "? Score			: " + "10000 x " + _finalQuestionCount;
+        _scoreTexts[2].text = "Remove Card	: -100 x " + _finalRemoveCardCount;
+        _scoreTexts[3].text = "Final Score		: " + _finalScore;
 
         if (!RuleMng.GetInstance.IsAllRuleOpen)
             _percentText.text = "New Rule " + ((int)(((float)_myScore / _goalScore) * 100)).ToString() + "%";
         else
             _percentText.text = "All Rule Open";
     }
-
+    public void SetActivePreRuleScore(bool value)
+    {
+        _percentText.gameObject.SetActive(value);
+    }
     public void Test()
     {
         _percentText.gameObject.SetActive(true);
-        _stageScoreText.gameObject.SetActive(true);
         CoroutineManager.instance.StartCoroutine(ScoreUpdate());
         _revision = _scoreCalTime / _levelScore;
     }
@@ -95,18 +123,48 @@ public class ScoreMng : Singleton<ScoreMng> {
         Debug.Log(_preStageScore);
         _levelScore += _preStageScore;
         _preStageScore = 0;
+        _scoreText.text = "Score " + _levelScore;
     }
     public void SubtractCard()
     {
-        _preStageScore -= _cardRemoveScore;
+        _finalRemoveCardCount++;
     }
     public void AddScore(int score)
     {
         _preStageScore += score;
     }
+    public void AddQuestion(int count)
+    {
+        _finalQuestionCount += count;
+    }
     IEnumerator ScoreUpdate()
     {
-        yield return new WaitForSeconds(1f);
+        _finalObtainScore = _levelScore;
+        _finalScore = _finalObtainScore + _finalQuestionCount * 10000 - (_finalRemoveCardCount * 100);
+        _levelScore += _finalQuestionCount * 10000 - (_finalRemoveCardCount * 100);
+        if (GPGSMng.GetInstance != null)
+            GPGSMng.GetInstance.ReportHighScore(_levelScore);
+
+        if (GameMng.GetInstance.LoadGame("HighScore") < _levelScore)
+        {
+            GameMng.GetInstance.SaveGame("HighScore", _levelScore);
+            _highScore = _levelScore;
+        }
+        GameMng.GetInstance.SaveGame("ObtainedScore", _levelScore + GameMng.GetInstance.LoadGame("ObtainedScore"));
+        _obtainedScores += _levelScore;
+        foreach (var item in _scoreTexts)
+        {
+            SoundMng.GetInstance.Play(4);
+            item.gameObject.SetActive(true);
+            yield return new WaitForSeconds(1f);
+        }
+        if(RuleMng.GetInstance.IsAllRuleOpen)
+        {
+            yield return new WaitForSeconds(3f);
+            StageMng.GetInstance.LobbySetting();
+            Init();
+            yield break;
+        }
         while (true)
         {
             if(_levelScore > 0)
@@ -137,6 +195,7 @@ public class ScoreMng : Singleton<ScoreMng> {
                     yield return new WaitForSeconds(1f);
                     RuleMng.GetInstance.NewRule();
                     _myScore = 0;
+                    GameMng.GetInstance.SaveGame("PreRuleScore", _myScore);
                     _ruleCount++;
                     GoalScoreSetting();
                     Init();
@@ -146,6 +205,7 @@ public class ScoreMng : Singleton<ScoreMng> {
             }
             else
             {
+                GameMng.GetInstance.SaveGame("PreRuleScore", _myScore);
                 // score cal end
                 yield return new WaitForSeconds(2f);
                 StageMng.GetInstance.LobbySetting();

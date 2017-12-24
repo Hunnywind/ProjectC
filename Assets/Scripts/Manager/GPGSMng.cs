@@ -58,6 +58,32 @@ public class GPGSMng : Singleton<GPGSMng> {
         else
             return null;
     }
+    public void ReportHighScore(int score)
+    {
+#if UNITY_ANDROID
+        PlayGamesPlatform.Instance.ReportScore(score, GPGSIds.leaderboard_high_score, (bool success) =>
+        {
+            if(success)
+            {
+                
+            }
+            else
+            {
+            }
+        });
+#endif
+    }
+    public void ShowLeaderboardUI()
+    {
+        if (bLogin) Social.ShowLeaderboardUI();
+        else return;
+#if UNITY_ANDROID
+        PlayGamesPlatform.Instance.ShowLeaderboardUI();
+#endif
+    }
+
+
+
     public void OnApplicationQuit()
     {
         GPGSMng.GetInstance.LogoutGPGS();

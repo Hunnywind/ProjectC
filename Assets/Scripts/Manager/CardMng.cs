@@ -133,9 +133,15 @@ public class CardMng : Singleton<CardMng> {
     {
         _mustUseCardCount++;
         if (card.GetDirection() == Direction.LEFT)
+        {
+            _answerBox.DeleteCard(Direction.LEFT);
             _mustUseLeftCardCount++;
+        }
         else
+        {
+            _answerBox.DeleteCard(Direction.RIGHT);
             _mustUseRightCardCount++;
+        }
 
         card.gameObject.transform.SetParent(_aCardObjectPool.gameObject.transform);
     }

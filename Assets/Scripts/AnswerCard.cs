@@ -7,6 +7,10 @@ using UnityEngine.UI;
 [RequireComponent(typeof(BoxCollider2D))]
 
 public class AnswerCard : SCard {
+    public override void Awake()
+    {
+        base.Awake();
+    }
     public override void Start()
     {
         base.Start();
@@ -33,12 +37,18 @@ public class AnswerCard : SCard {
     }
     private void OnMouseDown()
     {
-        if (StageMng.GetInstance._isStageStart)
+        if (!StageMng.GetInstance._isStageStart) return;
+
+        foreach (var item in _cardTypeList)
         {
-            ScoreMng.GetInstance.SubtractCard();
-            SoundMng.GetInstance.Play(0);
-            ReturnCard();
+            if(item == CardType.QUESTION_MARK)
+            {
+                    ScoreMng.GetInstance.AddQuestion(-1);
+            }
         }
+        ScoreMng.GetInstance.SubtractCard();
+        SoundMng.GetInstance.Play(0);
+        ReturnCard();
     }
     public override void ReturnCard()
     {
